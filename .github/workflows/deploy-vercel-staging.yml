@@ -224,13 +224,13 @@ jobs:
           echo "Url where to run E2E tests (VERCEL_DEPLOYMENT_URL): " $VERCEL_DEPLOYMENT_URL
           echo "VERCEL_DEPLOYMENT_URL=$VERCEL_DEPLOYMENT_URL" >> $GITHUB_ENV
 
-    - name: Waiting for Vercel deployment
-      uses: mskelton/wait-for-vercel-action@v1
-      id: wait-for-vercel
-      with:
-        prod-url: nrn-v2-mst-aptd-gcms-lcz-sty-c1.vercel.app #TODO
-        token: ${{ secrets.VERCEL_TOKEN }}
-        await-build: true
+      - name: Waiting for Vercel deployment
+        uses: mskelton/wait-for-vercel-action@v1
+        id: wait-for-vercel
+        with:
+          prod-url: nrn-v2-mst-aptd-gcms-lcz-sty-c1.vercel.app #TODO
+          token: ${{ secrets.VERCEL_TOKEN }}
+          await-build: true
 
       # Run the E2E tests against the new Vercel deployment
       - name: Run E2E tests (Cypress)
