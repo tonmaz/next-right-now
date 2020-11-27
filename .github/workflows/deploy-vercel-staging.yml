@@ -230,7 +230,7 @@ jobs:
           VERCEL_DEPLOIMENT_STATUS=`curl -s -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}' VERCEL_FETCH_SPECIFIC_DEPLOIMENT_API_ENDPOINT | jq ".readyState"`
           echo vercel deployment status: $VERCEL_DEPLOIMENT_STATUS
 
-          until [ $VERCEL_DEPLOIMENT_STATUS == READY || $VERCEL_DEPLOIMENT_STATUS == ERROR ]; do
+          until [[ "$VERCEL_DEPLOIMENT_STATUS" == "READY" || "$VERCEL_DEPLOIMENT_STATUS" == "ERROR" ]]; do
             VERCEL_DEPLOIMENT_STATUS=`curl -s -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}' VERCEL_FETCH_SPECIFIC_DEPLOIMENT_API_ENDPOINT | jq ".readyState"`
             echo vercel deployment status: $VERCEL_DEPLOIMENT_STATUS
           done
