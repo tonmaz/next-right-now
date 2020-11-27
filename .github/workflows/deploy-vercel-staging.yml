@@ -228,9 +228,10 @@ jobs:
         uses: mskelton/wait-for-vercel-action@v1
         id: wait-for-vercel
         with:
-          prod-url: nrn-v2-mst-aptd-gcms-lcz-sty-c1.vercel.app #TODO
+          prod-url: https://nrn-v2-mst-aptd-gcms-lcz-sty-c1.vercel.app #TODO
           token: ${{ secrets.VERCEL_TOKEN }}
           await-build: true
+          team-id: ${{ env.VERCEL_TEAM_ID }}
 
       # Run the E2E tests against the new Vercel deployment
       - name: Run E2E tests (Cypress)
