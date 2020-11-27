@@ -226,18 +226,14 @@ jobs:
           echo "VERCEL_DEPLOYMENT_URL=$VERCEL_DEPLOYMENT_URL" >> $GITHUB_ENV
 
           VERCEL_FETCH_SPECIFIC_DEPLOIMENT_API_ENDPOINT="https://api.zeit.co/v11/now/deployments/get?url=$VERCEL_DEPLOYMENT"
-          VERCEL_DEPLOIMENT_STATUS=`curl -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}' VERCEL_FETCH_SPECIFIC_DEPLOIMENT_API_ENDPOINT | jq ".readyState"`
+          echo "Fetching deploiment endpoint: $VERCEL_FETCH_SPECIFIC_DEPLOIMENT_API_ENDPOINT
+          VERCEL_DEPLOIMENT_STATUS=`curl -s -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}' VERCEL_FETCH_SPECIFIC_DEPLOIMENT_API_ENDPOINT | jq ".readyState"`
           echo vercel deployment status: $VERCEL_DEPLOIMENT_STATUS
 
-      # Be sure that the endpoint is ready by pinging it before starting tests, it has a timeout of 120seconds
-      - name: Waiting for Vercel deployment
-        uses: mskelton/wait-for-vercel-action@v1
-        id: wait-for-vercel
-        with:
-          prod-url: ${{ env.VERCEL_DEPLOYMENT_URL }}
-          token: ${{ secrets.VERCEL_TOKEN }}
-          await-build: true
-
+          until [ $VERCEL_DEPLOIMENT_STATUS == READY || $VERCEL_DEPLOIMENT_STATUS == ERROR ]; do
+            VERCEL_DEPLOIMENT_STATUS=`curl -s -H 'Accept: application/json' -H 'Content-Type: application/json' -H 'Authorization: Bearer ${{ secrets.VERCEL_TOKEN }}' VERCEL_FETCH_SPECIFIC_DEPLOIMENT_API_ENDPOINT | jq ".readyState"`
+            echo vercel deployment status: $VERCEL_DEPLOIMENT_STATUS
+          done
 
       # Run the E2E tests against the new Vercel deployment
       - name: Run E2E tests (Cypress)
